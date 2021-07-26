@@ -2,9 +2,18 @@ class textfit extends HTMLElement {
     constructor() {
         super();
 
-//        this.addEventListener('input',()=>this.render()); // contenteditable
-        this.addEventListener('blur',()=>this.render()); // contenteditable
-        //addEventListener('load',render); // e.g. font switch
+        let shadowRoot = this.attachShadow({ mode: 'open' });
+        shadowRoot.innerHTML = `
+        <style>
+        :host {}
+        slot { display:block; }
+        </style>
+        <slot></slot>
+        `;
+        this.slotEl = shadowRoot.querySelector('slot');
+
+        this.addEventListener('input',()=>this.render()); // contenteditable
+        addEventListener('load',this.render()); // e.g. font switch
         if (window.ResizeObserver) {
             this._rObserver = new ResizeObserver(() => this.render() );
         }
@@ -12,11 +21,12 @@ class textfit extends HTMLElement {
         this._observer = new IntersectionObserver((entries)=>{
             entries[0].isIntersecting ? this._animate(this._start, this._end) : this._reset();
         });
+
     }
 
     connectedCallback() {
         this.render();
-//        this._rObserver && this._rObserver.observe(this);
+        this._rObserver && this._rObserver.observe(this);
     }
     disconnectedCallback() {
         this._rObserver.disconnect(this)
@@ -24,27 +34,40 @@ class textfit extends HTMLElement {
 
     render(){
         const font = getComputedStyle(this).getPropertyValue('font-family');
+        const weight = getComputedStyle(this).getPropertyValue('font-weight');
+        const fStyle = getComputedStyle(this).getPropertyValue('font-style');
         const canvas = document.createElement('canvas');
         const c2d = canvas.getContext('2d');
         c2d.direction = 'ltr';
-        c2d.font = '1px ' + font;
+        c2d.font = fStyle + ' ' + weight + ' 100px ' + font;
         const text = this.innerText;
-        const firstChar = text[0];
-        const lastChar = text[text.length-1];
-        console.log()
-        const left = c2d.measureText(firstChar).actualBoundingBoxLeft;
-        const right = c2d.measureText(lastChar).actualBoundingBoxRight;
+        const measure = c2d.measureText(text);
+        const left  = measure.actualBoundingBoxLeft;
+        const right = measure.actualBoundingBoxRight;
+        //const ascent = measure.actualBoundingBoxAscent;
+        //const descent = measure.actualBoundingBoxDescent;
 
+        this.slotEl.style.marginLeft = left/100 + 'em';
+
+        const widthAt100px = right + left;
+        const space = this.clientWidth; // how wide is the content, with the smallest font-size possible
+        let fs = (space / widthAt100px) * 100
+
+        this.style.setProperty('--gen-font-size', fs+'px');
+
+        //this.slotEl.style.height = (descent+ascent)/100 + 'em';
+
+
+        //this.slotEl.style.position = 'relative';
+        //this.slotEl.style.top = -(descent)/100 + 'em';
+
+        return;
 
 
         this.style.marginLeft = left + 'em';
         //this.style.marginRight = -right+left + 'em';
         //this.style.width = 'calc(100% + '+(right-left)+'em)';
         //this.style.top = -c2d.measureText('T').actualBoundingBoxAscent + 'em';
-
-        // todo: remove "side bearing"
-        // (canvas measureText?)
-        // https://stackoverflow.com/questions/60347194/how-to-fit-text-to-a-precise-width-on-html-canvas
 
         this.style.fontSize = '';
         const style = getComputedStyle(this);
@@ -62,8 +85,7 @@ class textfit extends HTMLElement {
         let max = maxSize;
 
         while (++runs < 20) {
-
-            const tooWide = this.scrollWidth > originalWidth;
+            const tooWide = this.scrollWidth + (activeSize*left) > originalWidth;
 //            const tooHigh = this.scrollHeight > (this.clientHeight + 1);
 //            const tooBig = tooWide || tooHigh;
 //            if (!tooBig) {

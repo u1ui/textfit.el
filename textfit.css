@@ -2,16 +2,7 @@ u1-textfit {
     display:block;
     --u1-textfit-font-size-min:12;
     white-space:nowrap;
-    --line-height:calc(1.1em);
-    x--line-height:normal;
-
-    /*
-    height:1em;
-    display: flex;
-    align-items: flex-end;
-    overflow:hidden;
-    xsfont-family:times;
-    font-family: monospace;
-    sfont-family:fantasy;
-    */
+    xline-height:1.2em;
+    font-size:var(--gen-font-size);
+    font-size: clamp(10px, var(--gen-font-size), 400px);
 }
