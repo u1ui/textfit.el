@@ -5,7 +5,6 @@ class textfit extends HTMLElement {
         let shadowRoot = this.attachShadow({ mode: 'open' });
         shadowRoot.innerHTML = `
         <style>
-        :host {}
         slot { display:block; }
         </style>
         <slot></slot>
@@ -17,10 +16,6 @@ class textfit extends HTMLElement {
         if (window.ResizeObserver) {
             this._rObserver = new ResizeObserver(() => this.render() );
         }
-
-        this._observer = new IntersectionObserver((entries)=>{
-            entries[0].isIntersecting ? this._animate(this._start, this._end) : this._reset();
-        });
 
     }
 
@@ -54,63 +49,7 @@ class textfit extends HTMLElement {
         let fs = (space / widthAt100px) * 100
 
         this.style.setProperty('--gen-font-size', fs+'px');
-
-        //this.slotEl.style.height = (descent+ascent)/100 + 'em';
-
-
-        //this.slotEl.style.position = 'relative';
-        //this.slotEl.style.top = -(descent)/100 + 'em';
-
-        return;
-
-
-        this.style.marginLeft = left + 'em';
-        //this.style.marginRight = -right+left + 'em';
-        //this.style.width = 'calc(100% + '+(right-left)+'em)';
-        //this.style.top = -c2d.measureText('T').actualBoundingBoxAscent + 'em';
-
-        this.style.fontSize = '';
-        const style = getComputedStyle(this);
-        const originalWidth = this.clientWidth; // how wide is the content, with the smallest font-size possible
-
-        //let maxSize = parseFloat(style.fontSize);
-        let maxSize = 400;
-        const minSize = parseFloat(style.getPropertyValue('--u1-textfit-font-size-min') || 12);
-        this.style.fontSize = minSize+'px';
-
-        let runs = 0;
-        let activeSize = minSize;
-
-        let min = minSize;
-        let max = maxSize;
-
-        while (++runs < 20) {
-            const tooWide = this.scrollWidth + (activeSize*left) > originalWidth;
-//            const tooHigh = this.scrollHeight > (this.clientHeight + 1);
-//            const tooBig = tooWide || tooHigh;
-//            if (!tooBig) {
-            if (!tooWide) {
-                min = activeSize;
-                activeSize = (activeSize + max) / 2;
-            } else { // to big
-                max = activeSize;
-                activeSize = (activeSize + min) / 2;
-            }
-            this.style.fontSize = activeSize + 'px';
-            if (maxSize - activeSize < 0.1) return;
-        }
     }
-
-    //customProperty(property) { return getComputedStyle(this).getPropertyValue('--u1-carousel-' + property); }
-}
-
-
-function format(el, val){
-    return new Intl.NumberFormat(undefined, {
-        style: 'decimal',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(val);
 }
 
 customElements.define('u1-textfit', textfit)
