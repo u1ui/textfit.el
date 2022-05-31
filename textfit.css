@@ -1,8 +1,6 @@
 u1-textfit {
     display:block;
-    --u1-textfit-font-size-min:12;
     white-space:nowrap;
-    xline-height:1.2em;
     font-size:var(--gen-font-size);
-    font-size: clamp(10px, var(--gen-font-size), 400px);
+    font-size: clamp(11px, var(--gen-font-size), 400px);
 }
