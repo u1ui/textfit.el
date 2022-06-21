@@ -1,10 +1,6 @@
 # &lt;u1-textfit&gt; - element
 Exactly fit text
 
-## Demos
-https://raw.githack.com/u1ui/textfit.el/main/tests/minimal.html  
-https://raw.githack.com/u1ui/textfit.el/main/tests/test.html  
-
 ## Ussage
 
 ```html
@@ -19,10 +15,10 @@ https://raw.githack.com/u1ui/textfit.el/main/tests/test.html
 <script src="https://cdn.jsdelivr.net/gh/u1ui/textfit.el@3.0.0/textfit.min.js" type=module>
 ```
 
-## Demo
+## Demos
 
-https://raw.githack.com/u1ui/textfit.el/main/tests/minimal.html  
-https://raw.githack.com/u1ui/textfit.el/main/tests/test.html  
+[minimal.html](https://raw.githack.com/u1ui/textfit.el/main/tests/minimal.html)  
+[test.html](https://raw.githack.com/u1ui/textfit.el/main/tests/test.html)  
 
 ## About
 
