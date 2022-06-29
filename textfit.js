@@ -1,22 +1,34 @@
+const throttle = (func, ms) => {
+    let timeOut;
+    return (...args) => {
+        if (timeOut) return;
+        timeOut = setTimeout(()=>{
+            requestAnimationFrame(()=>{
+                func(...args);
+                timeOut = null;
+            });
+        }, ms);
+    }
+}
+
 class textfit extends HTMLElement {
     constructor() {
         super();
-
         let shadowRoot = this.attachShadow({ mode: 'open' });
         shadowRoot.innerHTML = `
         <style>
-        slot { display:block; }
+        slot { display:block }
         </style>
         <slot></slot>
         `;
         this.slotEl = shadowRoot.querySelector('slot');
 
-        this.addEventListener('input',()=>this.render()); // contenteditable
-        addEventListener('load',this.render()); // e.g. font switch
-        if (window.ResizeObserver) {
-            this._rObserver = new ResizeObserver(() => this.render() );
-        }
+        this.render = throttle(this.render.bind(this), 20);
+        //this.render = this.render.bind(this);
 
+        this.addEventListener('input',this.render); // contenteditable
+        addEventListener('load',this.render); // e.g. font switch
+        this._rObserver = new ResizeObserver(this.render);  // todo? render can in turn trigger the observer, should we intercept that?
     }
 
     connectedCallback() {
@@ -24,13 +36,16 @@ class textfit extends HTMLElement {
         this._rObserver && this._rObserver.observe(this);
     }
     disconnectedCallback() {
-        this._rObserver.disconnect(this)
+        removeEventListener('load',this.render); // e.g. font switch
+        this._rObserver.disconnect(this);
     }
 
-    render(){
-        const font = getComputedStyle(this).getPropertyValue('font-family');
-        const weight = getComputedStyle(this).getPropertyValue('font-weight');
-        const fStyle = getComputedStyle(this).getPropertyValue('font-style');
+    render(e){
+        console.log(e)
+        const style = getComputedStyle(this);
+        const font   = style.getPropertyValue('font-family');
+        const weight = style.getPropertyValue('font-weight');
+        const fStyle = style.getPropertyValue('font-style');
         const canvas = document.createElement('canvas');
         const c2d = canvas.getContext('2d');
         c2d.direction = 'ltr';
@@ -52,4 +67,4 @@ class textfit extends HTMLElement {
     }
 }
 
-customElements.define('u1-textfit', textfit)
+customElements.define('u1-textfit', textfit);

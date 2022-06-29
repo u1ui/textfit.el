@@ -5,7 +5,12 @@ Exactly fit text
 
 ```html
 <u1-textfit>ABCD</u1-textfit>
-<u1-textfit>123456789</u1-textfit>
+```
+
+```css
+u1-textfit {
+    font-size: clamp(20px, var(--gen-font-size), 400px);
+}
 ```
 
 ## Install
