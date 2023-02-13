@@ -16,8 +16,8 @@ u1-textfit {
 ## Install
 
 ```html
-<link href="https://cdn.jsdelivr.net/gh/u1ui/textfit.el@3.0.0/textfit.min.css" rel=stylesheet>
-<script src="https://cdn.jsdelivr.net/gh/u1ui/textfit.el@3.0.0/textfit.min.js" type=module>
+<link href="https://cdn.jsdelivr.net/gh/u1ui/textfit.el@x.x.x/textfit.min.css" rel=stylesheet>
+<script src="https://cdn.jsdelivr.net/gh/u1ui/textfit.el@x.x.x/textfit.min.js" type=module>
 ```
 
 ## Demos
