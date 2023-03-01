@@ -41,7 +41,6 @@ class textfit extends HTMLElement {
     }
 
     render(e){
-        console.log(e)
         const style = getComputedStyle(this);
         const font   = style.getPropertyValue('font-family');
         const weight = style.getPropertyValue('font-weight');
